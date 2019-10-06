@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,49 +12,49 @@ namespace DiaryApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class DiariesController : ControllerBase
+    public class PicturesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public DiariesController(ApplicationDbContext context)
+        public PicturesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Diaries
+        // GET: api/Pictures
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Diary>>> GetDiaries()
+        public async Task<ActionResult<IEnumerable<Picture>>> GetPictures()
         {
-            return await _context.Diaries.ToListAsync();
+            return await _context.Pictures.ToListAsync();
         }
 
-        // GET: api/Diaries/5
+        // GET: api/Pictures/5
         [Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Diary>> GetDiary(int id)
+        public async Task<ActionResult<Picture>> GetPicture(string id)
         {
-            var diary = await _context.Diaries.FindAsync(id);
+            var Picture = await _context.Pictures.FindAsync(id);
 
-            if (diary == null)
+            if (Picture == null)
             {
                 return NotFound();
             }
 
-            return diary;
+            return Picture;
         }
 
-        // PUT: api/Diaries/5
+        // PUT: api/Pictures/5
         [Authorize]
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDiary(int id, Diary diary)
+        public async Task<IActionResult> PutPicture(string id, Picture Picture)
         {
-            if (id != diary.id)
+            if (id != Picture.fileName)
             {
                 return BadRequest();
             }
 
-            _context.Entry(diary).State = EntityState.Modified;
+            _context.Entry(Picture).State = EntityState.Modified;
 
             try
             {
@@ -62,7 +62,7 @@ namespace DiaryApp.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!DiaryExists(id))
+                if (!PictureExists(id))
                 {
                     return NotFound();
                 }
@@ -75,37 +75,37 @@ namespace DiaryApp.Controllers
             return NoContent();
         }
 
-        // POST: api/Diaries
+        // POST: api/Pictures
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Diary>> PostDiary(Diary diary)
+        public async Task<ActionResult<Picture>> PostPicture(Picture Picture)
         {
-            _context.Diaries.Add(diary);
+            _context.Pictures.Add(Picture);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDiary", new { id = diary.id }, diary);
+            return CreatedAtAction("GetPicture", new { fileName = Picture.fileName }, Picture);
         }
 
-        // DELETE: api/Diaries/5
+        // DELETE: api/Pictures/5
         [Authorize]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Diary>> DeleteDiary(int id)
+        public async Task<ActionResult<Picture>> DeletePicture(string id)
         {
-            var diary = await _context.Diaries.FindAsync(id);
-            if (diary == null)
+            var Picture = await _context.Pictures.FindAsync(id);
+            if (Picture == null)
             {
                 return NotFound();
             }
 
-            _context.Diaries.Remove(diary);
+            _context.Pictures.Remove(Picture);
             await _context.SaveChangesAsync();
 
-            return diary;
+            return Picture;
         }
 
-        private bool DiaryExists(int id)
+        private bool PictureExists(string id)
         {
-            return _context.Diaries.Any(e => e.id == id);
+            return _context.Pictures.Any(e => e.fileName == id);
         }
     }
 }

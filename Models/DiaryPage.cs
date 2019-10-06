@@ -11,6 +11,7 @@ namespace DiaryApp.Models
         [Key]
         public int id { get; set; }
         public IEnumerable<Marking> markings { get; set; }
+        public IEnumerable<Picture> pictures { get; set; }
         public int number { get; set; }
         public string text { get; set; }
     }

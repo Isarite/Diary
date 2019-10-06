@@ -14,6 +14,8 @@ namespace DiaryApp.Models
         public DbSet<DiaryPage> Pages { get; set; }
         public DbSet<Marking> Markings { get; set; }
         public new DbSet<User> Users { get; set; }
+        
+        public DbSet<Picture> Pictures { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -26,8 +28,11 @@ namespace DiaryApp.Models
 
             modelBuilder.Entity<DiaryPage>().HasKey(p => p.id);
             modelBuilder.Entity<DiaryPage>().HasMany(p => p.markings).WithOne();
+            modelBuilder.Entity<DiaryPage>().HasMany(p => p.pictures).WithOne();
 
             modelBuilder.Entity<Marking>().HasKey(m => m.id);
+
+            modelBuilder.Entity<Picture>().HasKey(i => i.fileName);
         }
     }
 }
