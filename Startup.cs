@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using VueCliMiddleware;
 
 namespace DiaryApp
@@ -23,6 +24,11 @@ namespace DiaryApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
+            //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Filename = MyDatabase.db"));
+            //string connectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb").ToString();
+
+            //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+
             services.AddIdentity<User, IdentityRole>(options => { options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultProvider; }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -34,7 +40,7 @@ namespace DiaryApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext _context)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)//, ApplicationDbContext _context)
         {
             if (env.IsDevelopment())
             {
@@ -49,7 +55,7 @@ namespace DiaryApp
 
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
-            _context.Database.EnsureCreated();
+            //_context.Database.EnsureCreated();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

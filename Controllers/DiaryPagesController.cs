@@ -81,7 +81,7 @@ namespace DiaryApp.Controllers
             _context.Pages.Add(diaryPage);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDiaryPage", new { id = diaryPage.id }, diaryPage);
+            return CreatedAtAction("GetDiaryPage", new { diaryPage.id }, diaryPage);
         }
 
         // DELETE: api/DiaryPages/5
