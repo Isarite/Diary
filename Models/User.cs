@@ -9,6 +9,6 @@ namespace DiaryApp.Models
 {
     public class User:IdentityUser
     {
-        public IEnumerable<Diary> diaries { get; set; }
+        public IList<Diary> diaries { get; set; }
     }
 }

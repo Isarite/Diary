@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,10 +9,10 @@ namespace DiaryApp.Models
 {
     public class DiaryPage
     {
-        [Key]
-        public int id { get; set; }
-        public IEnumerable<Marking> markings { get; set; }
-        public IEnumerable<Picture> pictures { get; set; }
+        [ScaffoldColumn(false)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public string id { get; set; }
+        public IList<Marking> markings { get; set; }
         public int number { get; set; }
         public string text { get; set; }
     }

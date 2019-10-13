@@ -32,7 +32,7 @@ namespace DiaryApp.Controllers
         // GET: api/DiaryPages/5
         [Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<DiaryPage>> GetDiaryPage(int id)
+        public async Task<ActionResult<DiaryPage>> GetDiaryPage(string id)
         {
             var diaryPage = await _context.Pages.FindAsync(id);
 
@@ -46,7 +46,7 @@ namespace DiaryApp.Controllers
 
         // PUT: api/DiaryPages/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDiaryPage(int id, DiaryPage diaryPage)
+        public async Task<IActionResult> PutDiaryPage(string id, DiaryPage diaryPage)
         {
             if (id != diaryPage.id)
             {
@@ -86,7 +86,7 @@ namespace DiaryApp.Controllers
 
         // DELETE: api/DiaryPages/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<DiaryPage>> DeleteDiaryPage(int id)
+        public async Task<ActionResult<DiaryPage>> DeleteDiaryPage(string id)
         {
             var diaryPage = await _context.Pages.FindAsync(id);
             if (diaryPage == null)
@@ -100,7 +100,7 @@ namespace DiaryApp.Controllers
             return diaryPage;
         }
 
-        private bool DiaryPageExists(int id)
+        private bool DiaryPageExists(string id)
         {
             return _context.Pages.Any(e => e.id == id);
         }
