@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using VueCliMiddleware;
 
 namespace DiaryApp
@@ -30,14 +32,19 @@ namespace DiaryApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
+            //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Filename = MyDatabase.db"));
             //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Filename = MyDatabase.db"));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("test"));
 
             //string connectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb").ToString();
             //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
-            services.AddIdentity<User, IdentityRole>(options => { options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultProvider; }).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            services.AddIdentity<User, IdentityRole>(options => 
+                { options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultProvider; })
+                .AddEntityFrameworkStores<ApplicationDbContext>().
+                AddDefaultTokenProviders();
+            services.TryAddScoped<RoleManager<IdentityRole>>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             var SecretKey = Encoding.ASCII.GetBytes
@@ -81,7 +88,7 @@ namespace DiaryApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext _context)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext _context, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -96,7 +103,23 @@ namespace DiaryApp
             app.UseAuthentication();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
+            //var roleManager = app.ApplicationServices.GetRequiredService<RoleManager<IdentityRole<string>>>();
+            //using (var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            //{
+            //    //create database schema if none exists
+            //    var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+            //    context.Database.EnsureCreated();
+
+            //    //If there is already an Administrator role, abort
+            //    var _roleManager = serviceScope.ServiceProvider.GetService<RoleManager<IdentityRole>>();
+            //    //Seed roles
+            //    roleManager.CreateAsync(new IdentityRole("Administrator"));
+            //    roleManager.CreateAsync(new IdentityRole("User"));
+            //}
+
             //_context.Database.EnsureCreated();
+
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -118,6 +141,17 @@ namespace DiaryApp
                 }
             });
             _context.Database.EnsureCreated();
+            SeedRoles(serviceProvider).Wait();
+        }
+
+        private async Task SeedRoles(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var roleExist = await roleManager.RoleExistsAsync("Administrator");
+            if(roleExist)
+                return;
+            await roleManager.CreateAsync(new IdentityRole("Administrator"));
+            await roleManager.CreateAsync(new IdentityRole("User"));
         }
     }
 }

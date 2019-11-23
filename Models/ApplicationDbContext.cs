@@ -4,16 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace DiaryApp.Models
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole, string>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
         public DbSet<Diary> Diaries { get; set; }
         public DbSet<DiaryPage> Pages { get; set; }
         public DbSet<Marking> Markings { get; set; }
         public new DbSet<User> Users { get; set; }
+        //public new DbSet<IdentityRole> Roles { get;set;}
+    
         
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

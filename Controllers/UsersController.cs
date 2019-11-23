@@ -25,13 +25,15 @@ namespace DiaryApp.Controllers
         private readonly IConfiguration _configuration;
         private readonly SignInManager<User> _signManager;
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UsersController(ApplicationDbContext context, IConfiguration configuration, UserManager<User> userManager, SignInManager<User> signInManager)
+        public UsersController(ApplicationDbContext context, IConfiguration configuration, UserManager<User> userManager, SignInManager<User> signInManager,RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _configuration = configuration;
             _userManager = userManager;
             _signManager = signInManager;
+            _roleManager = roleManager;
         }
 
         // GET: api/Users
@@ -62,8 +64,8 @@ namespace DiaryApp.Controllers
         {
             string username = "Domas";
             var result = await _signManager.PasswordSignInAsync(username, password, false, false);
-            var user = await _context.Users.Where(u => u.UserName.Equals(username)).FirstOrDefaultAsync();
-
+            var user = await _userManager.FindByNameAsync(username);
+            var roles =  await _userManager.GetRolesAsync(user);
             if (user == null)
             {
                 return NotFound();
@@ -77,7 +79,8 @@ namespace DiaryApp.Controllers
                 claims:  new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id)
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Role, roles[0])//TODO set roles
             },
         notBefore: new DateTimeOffset(DateTime.Now).DateTime,
                 expires: new DateTimeOffset(DateTime.Now.AddDays(1)).DateTime,
@@ -133,14 +136,15 @@ namespace DiaryApp.Controllers
             UserStore<User> store = new UserStore<User>(_context);
             await store.SetPasswordHashAsync(user, hashedNewPassword);
 
-
             await _userManager.UpdateAsync(user);
+            var last = await _userManager.AddToRoleAsync(user, "User");
+            
 
             return CreatedAtAction("GetUser", new { Id = user.Id }, user);
         }
 
         // DELETE: api/Users/5
-        [Authorize]
+        [Authorize(Roles = "Administrator")]
         [HttpDelete("{id}")]
         public async Task<ActionResult<User>> DeleteUser(string id)
         {
