@@ -37,7 +37,7 @@ namespace DiaryApp.Controllers
         }
 
         // GET: api/Users
-        [Authorize]
+        [Authorize(Roles = "Administrator")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
@@ -45,6 +45,7 @@ namespace DiaryApp.Controllers
         }
 
         // GET: api/Users/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(string id)
         {
@@ -95,6 +96,7 @@ namespace DiaryApp.Controllers
         }
 
         // PUT: api/Markings/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(string id, User user)
         {
