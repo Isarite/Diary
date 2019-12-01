@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="$USER_HOME$/.Rider2019.2/system/extResources" t="IncludeRecursive" />
+    <e p="$USER_HOME$/.Rider2019.2/system/resharper-host/local/Transient/ReSharperHost/v192/SolutionCaches/_DiaryApp.141270679.00" t="ExcludeRecursive" />
+    <e p="$PROJECT_DIR$" t="IncludeRecursive">
+      <e p=".gitattributes" t="Include" />
+      <e p=".gitignore" t="Include" />
+      <e p=".gitignore.txt" t="Include" />
+      <e p="ClientApp" t="Include">
+        <e p=".browserslistrc" t="Include" />
+        <e p=".gitignore" t="Include" />
+        <e p="README.md" t="Include" />
+        <e p="babel.config.js" t="Include" />
+        <e p="dist" t="Include">
+          <e p="css" t="Include">
+            <e p="app.bfb7cecc.css" t="Include" />
+            <e p="chunk-vendors.771523a3.css" t="Include" />
+          </e>
+          <e p="favicon.ico" t="Include" />
+          <e p="fonts" t="Include">
+            <e p="materialdesignicons-webfont.3ac50b5b.ttf" t="Include" />
+            <e p="materialdesignicons-webfont.7ec5dab7.woff2" t="Include" />
+            <e p="materialdesignicons-webfont.a0d13d16.woff" t="Include" />
+            <e p="materialdesignicons-webfont.a32fa1f2.eot" t="Include" />
+          </e>
+          <e p="img" t="Include">
+            <e p="icons" t="Include">
+              <e p="android-chrome-192x192.png" t="Include" />
+              <e p="android-chrome-512x512.png" t="Include" />
+              <e p="apple-touch-icon-120x120.png" t="Include" />
+              <e p="apple-touch-icon-152x152.png" t="Include" />
+              <e p="apple-touch-icon-180x180.png" t="Include" />
+              <e p="apple-touch-icon-60x60.png" t="Include" />
+              <e p="apple-touch-icon-76x76.png" t="Include" />
+              <e p="apple-touch-icon.png" t="Include" />
+              <e p="favicon-16x16.png" t="Include" />
+              <e p="favicon-32x32.png" t="Include" />
+              <e p="msapplication-icon-144x144.png" t="Include" />
+              <e p="mstile-150x150.png" t="Include" />
+              <e p="safari-pinned-tab.svg" t="Include" />
+            </e>
+            <e p="logo.978a7dfc.png" t="Include" />
+          </e>
+          <e p="index.html" t="Include" />
+          <e p="js" t="Include">
+            <e p="app.c884c9ae.js" t="Include" />
+            <e p="app.c884c9ae.js.map" t="Include" />
+            <e p="chunk-vendors.c2a51416.js" t="Include" />
+            <e p="chunk-vendors.c2a51416.js.map" t="Include" />
+            <e p="counter.d97003cb.js" t="Include" />
+            <e p="counter.d97003cb.js.map" t="Include" />
+            <e p="fetch-data.1e40af62.js" t="Include" />
+            <e p="fetch-data.1e40af62.js.map" t="Include" />
+          </e>
+          <e p="manifest.json" t="Include" />
+          <e p="precache-manifest.0aaeec28c9eec62fd00a6da1b324edad.js" t="Include" />
+          <e p="robots.txt" t="Include" />
+          <e p="service-worker.js" t="Include" />
+        </e>
+        <e p="node_modules/@babel/polyfill" t="IncludeRecursive" />
+        <e p="node_modules/@mdi/font" t="IncludeRecursive" />
+        <e p="node_modules/@types" t="IncludeRecursive">
+          <e p="events" t="IncludeRecursive" />
+          <e p="minimatch" t="IncludeRecursive" />
+          <e p="node" t="IncludeRecursive" />
+        </e>
+        <e p="node_modules/@vue/cli-plugin-babel" t="IncludeRecursive" />
+        <e p="node_modules/@vue/cli-plugin-pwa" t="IncludeRecursive" />
+        <e p="node_modules/@vue/cli-plugin-typescript" t="IncludeRecursive" />
+        <e p="node_modules/@vue/cli-service" t="IncludeRecursive" />
+        <e p="node_modules/@vue/component-compiler-utils" t="IncludeRecursive" />
+        <e p="node_modules/address" t="IncludeRecursive" />
+        <e p="node_modules/axios" t="IncludeRecursive" />
+        <e p="node_modules/babel-plugin-transform-imports" t="IncludeRecursive" />
+        <e p="node_modules/chalk" t="IncludeRecursive" />
+        <e p="node_modules/chokidar" t="IncludeRecursive" />
+        <e p="node_modules/cli-highlight" t="IncludeRecursive" />
+        <e p="node_modules/commander" t="IncludeRecursive" />
+        <e p="node_modules/dotenv-expand" t="IncludeRecursive" />
+        <e p="node_modules/fork-ts-checker-webpack-plugin" t="IncludeRecursive" />
+        <e p="node_modules/javascript-stringify" t="IncludeRecursive" />
+        <e p="node_modules/portfinder" t="IncludeRecursive" />
+        <e p="node_modules/postcss" t="IncludeRecursive" />
+        <e p="node_modules/postcss-selector-parser" t="IncludeRecursive" />
+        <e p="node_modules/register-service-worker" t="IncludeRecursive" />
+        <e p="node_modules/sass" t="IncludeRecursive" />
+        <e p="node_modules/sass-loader" t="IncludeRecursive" />
+        <e p="node_modules/source-map" t="IncludeRecursive" />
+        <e p="node_modules/terser" t="IncludeRecursive" />
+        <e p="node_modules/ts-loader" t="IncludeRecursive" />
+        <e p="node_modules/tslib" t="IncludeRecursive" />
+        <e p="node_modules/tslint" t="IncludeRecursive" />
+        <e p="node_modules/upath" t="IncludeRecursive" />
+        <e p="node_modules/vue" t="IncludeRecursive" />
+        <e p="node_modules/vue-class-component" t="IncludeRecursive" />
+        <e p="node_modules/vue-cli-plugin-axios" t="IncludeRecursive" />
+        <e p="node_modules/vue-cli-plugin-vuetify" t="IncludeRecursive" />
+        <e p="node_modules/vue-loader" t="IncludeRecursive" />
+        <e p="node_modules/vue-property-decorator" t="IncludeRecursive" />
+        <e p="node_modules/vue-router" t="IncludeRecursive" />
+        <e p="node_modules/vue-template-compiler" t="IncludeRecursive" />
+        <e p="node_modules/vuetify" t="IncludeRecursive" />
+        <e p="node_modules/vuetify-loader" t="IncludeRecursive" />
+        <e p="node_modules/vuex" t="IncludeRecursive" />
+        <e p="node_modules/vuex-class" t="IncludeRecursive" />
+        <e p="package-lock.json" t="Include" />
+        <e p="package.json" t="Include" />
+        <e p="postcss.config.js" t="Include" />
+        <e p="public" t="Include">
+          <e p="favicon.ico" t="Include" />
+          <e p="img" t="Include">
+            <e p="icons" t="Include">
+              <e p="android-chrome-192x192.png" t="Include" />
+              <e p="android-chrome-512x512.png" t="Include" />
+              <e p="apple-touch-icon-120x120.png" t="Include" />
+              <e p="apple-touch-icon-152x152.png" t="Include" />
+              <e p="apple-touch-icon-180x180.png" t="Include" />
+              <e p="apple-touch-icon-60x60.png" t="Include" />
+              <e p="apple-touch-icon-76x76.png" t="Include" />
+              <e p="apple-touch-icon.png" t="Include" />
+              <e p="favicon-16x16.png" t="Include" />
+              <e p="favicon-32x32.png" t="Include" />
+              <e p="msapplication-icon-144x144.png" t="Include" />
+              <e p="mstile-150x150.png" t="Include" />
+              <e p="safari-pinned-tab.svg" t="Include" />
+            </e>
+          </e>
+          <e p="index.html" t="Include" />
+          <e p="manifest.json" t="Include" />
+          <e p="robots.txt" t="Include" />
+        </e>
+        <e p="src" t="Include">
+          <e p="App.vue" t="Include" />
+          <e p="assets" t="Include">
+            <e p="logo.png" t="Include" />
+          </e>
+          <e p="components" t="Include">
+            <e p="Counter.vue" t="Include" />
+            <e p="HelloWorld.vue" t="Include" />
+          </e>
+          <e p="main.ts" t="Include" />
+          <e p="models" t="Include">
+            <e p="Forecast.ts" t="Include" />
+          </e>
+          <e p="plugins" t="Include">
+            <e p="axios.js" t="Include" />
+            <e p="vuetify.ts" t="Include" />
+          </e>
+          <e p="registerServiceWorker.ts" t="Include" />
+          <e p="router.ts" t="Include" />
+          <e p="shims-tsx.d.ts" t="Include" />
+          <e p="shims-vue.d.ts" t="Include" />
+          <e p="store" t="Include">
+            <e p="counter" t="Include">
+              <e p="actions.ts" t="Include" />
+              <e p="getters.ts" t="Include" />
+              <e p="index.ts" t="Include" />
+              <e p="mutations.ts" t="Include" />
+              <e p="types.ts" t="Include" />
+            </e>
+            <e p="index.ts" t="Include" />
+            <e p="types.ts" t="Include" />
+          </e>
+          <e p="views" t="Include">
+            <e p="Counter.vue" t="Include" />
+            <e p="FetchData.vue" t="Include" />
+            <e p="Home.vue" t="Include" />
+          </e>
+        </e>
+        <e p="tsconfig.json" t="Include" />
+        <e p="tslint.json" t="Include" />
+      </e>
+      <e p="Controllers" t="Include">
+        <e p="DiariesController.cs" t="Include" />
+        <e p="DiaryPagesController.cs" t="Include" />
+        <e p="MarkingsController.cs" t="Include" />
+        <e p="SampleDataController.cs" t="Include" />
+        <e p="UsersController.cs" t="Include" />
+      </e>
+      <e p="DiaryApp.csproj" t="IncludeRecursive" />
+      <e p="DiaryApp.sln" t="IncludeFlat" />
+      <e p="Migrations" t="Include">
+        <e p="20191013165708_Initial.Designer.cs" t="Include" />
+        <e p="20191013165708_Initial.cs" t="Include" />
+        <e p="ApplicationDbContextModelSnapshot.cs" t="Include" />
+      </e>
+      <e p="Models" t="Include">
+        <e p="ApplicationDbContext.cs" t="Include" />
+        <e p="Diary.cs" t="Include" />
+        <e p="DiaryPage.cs" t="Include" />
+        <e p="Marking.cs" t="Include" />
+        <e p="User.cs" t="Include" />
+        <e p="UserRole.cs" t="Include" />
+      </e>
+      <e p="Pages" t="Include">
+        <e p="Error.cshtml" t="Include" />
+        <e p="Error.cshtml.cs" t="Include" />
+        <e p="_ViewImports.cshtml" t="Include" />
+      </e>
+      <e p="Program.cs" t="Include" />
+      <e p="Properties" t="Include">
+        <e p="PublishProfiles" t="Include">
+          <e p="DiaryJournal2019 - Web Deploy.pubxml" t="Include" />
+          <e p="FolderProfile.pubxml" t="Include" />
+        </e>
+        <e p="launchSettings.json" t="Include" />
+      </e>
+      <e p="README.md" t="Include" />
+      <e p="Resources" t="Include">
+        <e p="DiaryPageResource.cs" t="Include" />
+        <e p="DiaryResource.cs" t="Include" />
+        <e p="MarkingResource.cs" t="Include" />
+        <e p="Token.cs" t="Include" />
+      </e>
+      <e p="Startup.cs" t="Include" />
+      <e p="appsettings.Development.json" t="Include" />
+      <e p="appsettings.json" t="Include" />
+      <e p="bin" t="ExcludeRecursive" />
+      <e p="obj" t="ExcludeRecursive">
+        <e p="Debug" t="Include">
+          <e p="netcoreapp2.2" t="Include">
+            <e p="DiaryApp.AssemblyInfo.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="tslint.json" t="Include" />
+    </e>
+  </component>
+</project>
