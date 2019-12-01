@@ -25,11 +25,11 @@ namespace DiaryApp.Models
             modelBuilder.Entity<User>().HasMany(u => u.diaries).WithOne(d => d.user);
 
 
-            modelBuilder.Entity<Diary>().HasMany(d => d.pages).WithOne();
+            modelBuilder.Entity<Diary>().HasMany(d => d.pages).WithOne(p => p.diary);
             modelBuilder.Entity<Diary>().HasKey(d => d.id);
 
             modelBuilder.Entity<DiaryPage>().HasKey(p => p.id);
-            modelBuilder.Entity<DiaryPage>().HasMany(p => p.markings).WithOne();
+            modelBuilder.Entity<DiaryPage>().HasMany(p => p.markings).WithOne(m => m.page);
 
             modelBuilder.Entity<Marking>().HasKey(m => m.id);
 

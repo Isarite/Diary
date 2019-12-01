@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DiaryApp.Models;
 using DiaryApp.Resources;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DiaryApp.Controllers
 {
+    [Authorize(Roles = "Administrator,User")]
     [Route("api/[controller]")]
     [ApiController]
     public class MarkingsController : ControllerBase
@@ -22,10 +24,14 @@ namespace DiaryApp.Controllers
         }
 
         // GET: api/Markings
+        [Route("[action]/{id}")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Marking>>> GetMarkings(string DiaryId)
+        public async Task<ActionResult<IEnumerable<Marking>>> GetMarkings(string id)
         {
-            return await _context.Markings.ToListAsync();
+            var page = await _context.Pages.FindAsync(id);
+            var markings = from m in _context.Markings select m;
+            var result = await markings.Where(d => d.page.Equals(page)).ToListAsync();
+            return Ok(result);
         }
 
         // GET: api/Markings/5
@@ -49,6 +55,11 @@ namespace DiaryApp.Controllers
             if (id != marking.id)
             {
                 return BadRequest();
+            }
+
+            if (!MarkingExists(marking.id))
+            {
+                return NotFound();
             }
 
             _context.Entry(marking).State = EntityState.Modified;
@@ -76,9 +87,13 @@ namespace DiaryApp.Controllers
         [HttpPost]
         public async Task<ActionResult<Marking>> PostMarking(MarkingResource marking)
         {
+            var page = await _context.Pages.FindAsync(marking.PageId);
+            if (page == null)
+                return NotFound();
             var result = new Marking();
             result.start = marking.Start;
             result.end = marking.End;
+            result.page = page;
             await _context.Markings.AddAsync(result);
             var diaryPage = await _context.Pages.Where(w => w.id.Equals(marking.PageId)).FirstOrDefaultAsync();
             //diaryPage.markings.Add(result);
@@ -100,7 +115,7 @@ namespace DiaryApp.Controllers
             _context.Markings.Remove(marking);
             await _context.SaveChangesAsync();
 
-            return marking;
+            return Ok();
         }
 
         private bool MarkingExists(string id)

@@ -9,10 +9,13 @@ namespace DiaryApp.Models
 {
     public class Marking
     {
+
         [ScaffoldColumn(false)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string id { get; set; }
         public int start { get; set; }
         public int end { get; set; }
+        public DiaryPage page { get; set; }
+
     }
 }

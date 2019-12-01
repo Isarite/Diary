@@ -6,31 +6,35 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DiaryApp.Models;
+using DiaryApp.Resources;
 using Microsoft.AspNetCore.Authorization;
 
 namespace DiaryApp.Controllers
 {
+    [Authorize(Roles = "Administrator,User")]
     [Route("api/[controller]")]
     [ApiController]
-    public class DiaryPagesController : ControllerBase
+    public class PagesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public DiaryPagesController(ApplicationDbContext context)
+        public PagesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         // GET: api/DiaryPages
-        [Authorize]
+        [Route("[action]/{id}")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DiaryPage>>> GetPages()
+        public async Task<ActionResult<IEnumerable<DiaryPage>>> GetPages(string diaryId)
         {
-            return await _context.Pages.ToListAsync();
+            var diary = await _context.Diaries.FindAsync(diaryId);
+            var pages = from m in _context.Pages select m;
+            var result = await pages.Where(d => d.diary.Equals(diary)).ToListAsync();
+            return Ok(result);
         }
 
         // GET: api/DiaryPages/5
-        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<DiaryPage>> GetDiaryPage(string id)
         {
@@ -75,13 +79,18 @@ namespace DiaryApp.Controllers
         }
 
         // POST: api/DiaryPages
-        [HttpPost]
-        public async Task<ActionResult<DiaryPage>> PostDiaryPage(DiaryPage diaryPage)
+        [HttpPost("{id}")]
+        public async Task<ActionResult<DiaryPage>> PostDiaryPage([FromBody]DiaryPage diaryPage, string id)
         {
+            var diary = await _context.Diaries.FindAsync(id);
+            if (diary == null)
+                return NotFound();
+            diaryPage.diary = await _context.Diaries.FindAsync(id);
             _context.Pages.Add(diaryPage);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDiaryPage", new { diaryPage.id }, diaryPage);
+            return CreatedAtAction("GetDiaryPage", 
+                new DiaryPageResource{ id = diaryPage.id, number = diaryPage.number, text = diaryPage.text});
         }
 
         // DELETE: api/DiaryPages/5
@@ -97,7 +106,7 @@ namespace DiaryApp.Controllers
             _context.Pages.Remove(diaryPage);
             await _context.SaveChangesAsync();
 
-            return diaryPage;
+            return Ok();
         }
 
         private bool DiaryPageExists(string id)

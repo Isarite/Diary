@@ -9,15 +9,13 @@ namespace DiaryApp.Resources
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public int PageCount { get; set; }
         public DateTime created { get; set; }
         public DateTime edited { get; set; }
 
-        public DiaryResource(string Id, string Name, int PageCount, DateTime created, DateTime edited)
+        public DiaryResource(string id, string name, DateTime created, DateTime edited)
         {
-            this.Id = Id;
-            this.Name = Name;
-            this.PageCount = PageCount;
+            this.Id = id;
+            this.Name = name;
             this.created = created;
             this.edited = edited;
         }

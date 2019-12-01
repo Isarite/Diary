@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using DiaryApp.Models;
+using DiaryApp.Resources;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -39,15 +40,27 @@ namespace DiaryApp.Controllers
         // GET: api/Users
         [Authorize(Roles = "Administrator")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<UserReturn>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            var users = await _context.Users.ToListAsync();
+            var returnList = new List<UserReturn>();
+            foreach (var user in users)
+            {
+                returnList.Add(
+                    new UserReturn
+                    {
+                        Role = (await _userManager.GetRolesAsync(user)).First(),
+                        Id = user.Id,
+                        Name = user.NormalizedUserName
+                    });
+            }
+            return returnList;
         }
 
         // GET: api/Users/5
-        [Authorize]
+        [Authorize(Roles = "Administrator,User")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(string id)
+        public async Task<IActionResult> GetUser(string id)
         {
             var user = await _context.Users.FindAsync(id);
 
@@ -56,21 +69,29 @@ namespace DiaryApp.Controllers
                 return NotFound();
             }
 
-            return user;
+            var role = (await _userManager.GetRolesAsync(user)).First();
+            return Ok(
+                new UserReturn
+                {
+                    Id = user.Id,
+                    Name = user.NormalizedUserName,
+                    Role = role
+                });
         }
 
         // Put: api/Users/user
-        [Route("[action]")]
-        public async Task<ActionResult<string>> RequestToken([FromBody] string password )
+        [HttpPut]
+        [Route("[action]/{username}")]
+        public async Task<ActionResult<string>> RequestToken([FromBody] string password , string username)
         {
-            string username = "Domas";
-            var result = await _signManager.PasswordSignInAsync(username, password, false, false);
+
             var user = await _userManager.FindByNameAsync(username);
-            var roles =  await _userManager.GetRolesAsync(user);
-            if (user == null)
+            if (! await _userManager.CheckPasswordAsync(user,password))
             {
                 return NotFound();
             }
+            var roles =  await _userManager.GetRolesAsync(user);
+
             var key = Encoding.ASCII.GetBytes
                      ("lyTfdO0pRUuvjCD7ICfDQ5LBnkcfWL2luGG_HUjvuwubg9_D7qwJCmAJ2Fo3i30hHS4unlSr0Dk8Unm0MEikvqNvJVEsrqQuLvrGRWWHUJts5zyZlp1WAxUOocuf5gWbRlrHfgsi09rZqRcdbtGnNkdQttKrZ26i0vdJuF6npw3lLCWvwi4FRiVkBZYzybyHQ5nLa5xy5xFpTCrubs-GEKN5ErJQr44sUy0JAg2A03OHImx9iKOcRF_02cNNLcMWCgeGu0jSVfi5JonP1fw4bkjYsoNq-FnjJM2A-WgtyVeDlESft1HbfKtpNQKcHi6JUjQ1nnQ7lNAZ_c-blPB7BA");
             //Generate Token for user 
@@ -96,7 +117,7 @@ namespace DiaryApp.Controllers
         }
 
         // PUT: api/Markings/5
-        [Authorize]
+        [Authorize(Roles = "Administrator,User")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(string id, User user)
         {
@@ -128,27 +149,29 @@ namespace DiaryApp.Controllers
 
         // POST: api/Users
         [HttpPost("{username}")]
-        public async Task<ActionResult<User>> PostUser(string username, [FromBody] string password)
+        public async Task<ActionResult<UserReturn>> PostUser(string username, [FromBody] string password)
         {
+            if ( (await _userManager.FindByNameAsync(username)) != null)
+                return Conflict();
             await _userManager.CreateAsync(new User { UserName = username });
             var user = await _userManager.FindByNameAsync(username);
-            var res = await _userManager.AddPasswordAsync(user, username);
+            var res = await _userManager.AddPasswordAsync(user, password);
 
-            String hashedNewPassword = _userManager.PasswordHasher.HashPassword(user, password);
-            UserStore<User> store = new UserStore<User>(_context);
-            await store.SetPasswordHashAsync(user, hashedNewPassword);
+            //String hashedNewPassword = _userManager.PasswordHasher.HashPassword(user, password);
+            //UserStore<User> store = new UserStore<User>(_context);
+            //await store.SetPasswordHashAsync(user, hashedNewPassword);
 
             await _userManager.UpdateAsync(user);
-            var last = await _userManager.AddToRoleAsync(user, "User");
+            await _userManager.AddToRoleAsync(user, "User");
             
 
-            return CreatedAtAction("GetUser", new { Id = user.Id }, user);
+            return CreatedAtAction("GetUser", new UserReturn{ Id = user.Id ,Name = user.NormalizedUserName, Role = "User"});
         }
 
         // DELETE: api/Users/5
         [Authorize(Roles = "Administrator")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(string id)
+        public async Task<IActionResult> DeleteUser(string id)
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)
@@ -159,7 +182,7 @@ namespace DiaryApp.Controllers
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
-            return user;
+            return Ok();
         }
 
         private bool UserExists(string id)

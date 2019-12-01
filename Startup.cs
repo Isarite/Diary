@@ -11,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using VueCliMiddleware;
 
@@ -32,16 +33,23 @@ namespace DiaryApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Filename = MyDatabase.db"));
             //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Filename = MyDatabase.db"));
-            services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("test"));
+            //services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("test"));
 
             //string connectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb").ToString();
             //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
-            services.AddIdentity<User, IdentityRole>(options => 
-                { options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultProvider; })
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 5;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultProvider;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>().
                 AddDefaultTokenProviders();
             services.TryAddScoped<RoleManager<IdentityRole>>();
@@ -117,6 +125,7 @@ namespace DiaryApp
             //    roleManager.CreateAsync(new IdentityRole("User"));
             //}
 
+            //_context.Database.EnsureDeleted();
             //_context.Database.EnsureCreated();
 
 
@@ -152,6 +161,21 @@ namespace DiaryApp
                 return;
             await roleManager.CreateAsync(new IdentityRole("Administrator"));
             await roleManager.CreateAsync(new IdentityRole("User"));
+            var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+            var userExists = await userManager.FindByNameAsync("admin");
+            if (userExists != null)
+                return;
+
+            await userManager.CreateAsync(new User { UserName = "admin" });
+            var user = await userManager.FindByNameAsync("admin");
+            var res = await userManager.AddPasswordAsync(user, "12345");
+
+            String hashedNewPassword = userManager.PasswordHasher.HashPassword(user, "12345");
+            //UserStore<User> store = new UserStore<User>("");
+            //await store.SetPasswordHashAsync(user, hashedNewPassword);
+
+            await userManager.UpdateAsync(user);
+            var last = await userManager.AddToRoleAsync(user, "Administrator");
         }
     }
 }

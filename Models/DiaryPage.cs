@@ -12,6 +12,7 @@ namespace DiaryApp.Models
         [ScaffoldColumn(false)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string id { get; set; }
+        public Diary diary { get; set; }
         public IList<Marking> markings { get; set; }
         public int number { get; set; }
         public string text { get; set; }
