@@ -2,6 +2,10 @@ import Vue from 'vue';
 import Vuex, { StoreOptions } from 'vuex';
 import { RootState } from './types';
 import { counter } from './counter/index';
+// @ts-ignore
+import * as user from './user/index';
+
+
 
 Vue.use(Vuex);
 
@@ -13,6 +17,7 @@ const store: StoreOptions<RootState> = {
   },
   modules: {
     counter,
+    user
   },
 };
 

@@ -31,7 +31,7 @@
     </v-content>
 
     <v-footer app>
-      <span>&nbsp;Software Ateliers&nbsp;&copy;&nbsp;2019</span>
+      <span>&nbsp;Domas Jurevičius, IFF-6/4, 2019</span>
     </v-footer>
 
   </v-app>
@@ -40,6 +40,8 @@
 <script lang="ts">
 import HelloWorld from '@/components/HelloWorld.vue';
 import { Component, Vue } from 'vue-property-decorator';
+import axios from "axios";
+axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 
 @Component({
   components: { HelloWorld },
@@ -49,11 +51,16 @@ export default class App extends Vue {
   private drawer: boolean = true;
   private miniVariant: boolean = false;
   private right: boolean = true;
-  private title: string = 'ASP.NET Core Vue Starter';
+  private title: string = 'Diary App';
+
   private items = [
     { title: 'Home', icon: 'home', link: '/' },
     { title: 'Counter', icon: 'touch_app', link: '/counter' },
     { title: 'Fetch data', icon: 'get_app', link: '/fetch-data' },
+    { title: 'Fetch Diaries', icon: 'get_app', link: '/fetch-diaries' },
+    { title: 'Users', icon: 'supervisor_account', link: '/fetch-users'},
+    { title: 'Login', icon: 'supervisor_account', link: '/login'},
+    { title: 'Register', icon: 'supervisor_account', link: '/register'}
   ];
 }
 </script>
