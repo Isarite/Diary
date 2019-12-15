@@ -26,6 +26,9 @@
                                 </v-toolbar>
                                 <v-card-text>
                                     <v-form>
+                                        <v-alert type="error" v-model ="showAlert">
+                                            Login failed. Check your username and password.
+                                        </v-alert>
                                         <p><v-text-field v-model = "username" prepend-icon="person" placeholder="User name"/></p>
 
                                         <v-text-field v-model = "password":append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
@@ -54,7 +57,7 @@
     import { mapGetters, mapActions } from 'vuex';
     import router from "@/router";
     import {Action, Getter} from "vuex-class";
-    import { Component, Vue } from 'vue-property-decorator';
+    import { Component,Vue} from 'vue-property-decorator';
     import {user} from "@/store/user";
     import axios from "axios";
     import {Token} from "@/models/Token";
@@ -75,6 +78,7 @@
                 password: "",
                 show1: false,
                 token: localStorage.getItem('token'),
+                showAlert: false,
             };
         }
 
@@ -86,15 +90,22 @@
                     {headers: {"Content-Type": "application/json"}}
                 ).
             then((response) => {
-                if(response.status == 200) {
                     localStorage.setItem('token', response.data.token); // store the token in localstorage
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-                    router.push('/');
-                }else{
-                    localStorage.removeItem('token'); // store the token in localstorage
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${null}`;
-                }
+                localStorage.setItem('token', response.data.token); // store the token in localstorage
+                localStorage.setItem('loggedIn', "true"); // store the token in localstorage
+                axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+                    this.$data.showAlert = false;
+                this.$route.meta.admin = true;
+                this.$route.meta.authorized = true;
+                window.location.reload();
+                router.push("/")
+            }).catch( error =>
+            {console.log(error.response);
+                localStorage.removeItem('token');
+                localStorage.setItem('loggedIn', "false"); // store the token in localstorage
+                this.$data.showAlert = true;
             });
+
         }
 
     }

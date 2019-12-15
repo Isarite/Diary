@@ -49,5 +49,21 @@ export default new Router({
             name: 'fetch-diaries',
             component: () => import(/* webpackChunkName: "fetch-users" */ './views/FetchDiaries.vue'),
         },
+        {
+            path: '/logout',
+            name: 'logout',
+            component: () => import(/* webpackChunkName: "fetch-users" */ './views/Logout.vue'),
+        },
+        {
+            path: '/fetch-user/:id',
+            name: 'fetch-user',
+            component: () => import(/* webpackChunkName: "fetch-users" */ './views/FetchUser.vue'),//TODO changeView
+        },
+        {
+            path: '/fetch-diary/:id',
+            name: 'fetch-diary',
+            meta: {authorized: false},
+            component: () => import(/* webpackChunkName: "fetch-users" */ './views/FetchDiaries.vue'),//TODO changeView
+        },
     ],
 });

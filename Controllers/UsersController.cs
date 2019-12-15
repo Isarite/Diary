@@ -116,6 +116,42 @@ namespace DiaryApp.Controllers
             return new JsonResult (new { token = token });
         }
 
+        [Authorize]
+        [HttpPut]
+        [Route("[action]")]
+        public async Task<ActionResult<string>> RefreshToken()
+        {
+            string userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var user = await _userManager.FindByIdAsync(userId); 
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var key = Encoding.ASCII.GetBytes
+                     ("lyTfdO0pRUuvjCD7ICfDQ5LBnkcfWL2luGG_HUjvuwubg9_D7qwJCmAJ2Fo3i30hHS4unlSr0Dk8Unm0MEikvqNvJVEsrqQuLvrGRWWHUJts5zyZlp1WAxUOocuf5gWbRlrHfgsi09rZqRcdbtGnNkdQttKrZ26i0vdJuF6npw3lLCWvwi4FRiVkBZYzybyHQ5nLa5xy5xFpTCrubs-GEKN5ErJQr44sUy0JAg2A03OHImx9iKOcRF_02cNNLcMWCgeGu0jSVfi5JonP1fw4bkjYsoNq-FnjJM2A-WgtyVeDlESft1HbfKtpNQKcHi6JUjQ1nnQ7lNAZ_c-blPB7BA");
+            //Generate Token for user
+            var jwToken = new JwtSecurityToken(
+                issuer: "http://localhost:5000/",
+                audience: "http://localhost:5000/",
+                new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Role, roles[0])//TODO set roles
+            },
+        notBefore: new DateTimeOffset(DateTime.Now).DateTime,
+                expires: new DateTimeOffset(DateTime.Now.AddDays(1)).DateTime,
+                //Using HS256 Algorithm to encrypt Token
+                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key),
+                                    SecurityAlgorithms.HmacSha256Signature)
+            );
+            var token = new JwtSecurityTokenHandler().WriteToken(jwToken);
+            await _userManager.SetAuthenticationTokenAsync(user, TokenOptions.DefaultProvider, "token", token);
+            //TODO token creation
+            return new JsonResult(new {token});
+        }
+
+
+
         // PUT: api/Markings/5
         [Authorize(Roles = "Administrator,User")]
         [HttpPut("{id}")]
@@ -163,7 +199,7 @@ namespace DiaryApp.Controllers
 
             await _userManager.UpdateAsync(user);
             await _userManager.AddToRoleAsync(user, "User");
-            
+
 
             return CreatedAtAction("GetUser", new UserReturn{ Id = user.Id ,Name = user.NormalizedUserName, Role = "User"});
         }

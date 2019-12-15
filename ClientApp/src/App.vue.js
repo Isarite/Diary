@@ -3,6 +3,7 @@ import HelloWorld from '@/components/HelloWorld.vue';
 import { Component, Vue } from 'vue-property-decorator';
 import axios from "axios";
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+axios.defaults.baseURL = `http://localhost:5000`;
 let App = class App extends Vue {
     constructor() {
         super(...arguments);

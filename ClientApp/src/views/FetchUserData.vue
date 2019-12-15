@@ -18,6 +18,11 @@
           >
             <v-progress-linear v-slot:progress color="blue" indeterminate></v-progress-linear>
             <template v-slot:items="props">
+              <v-checkbox
+                      v-model="props.selected"
+                      :disabled="!props.selected && selected.length != 0"
+                      :indeterminate="!props.selected && selected.length != 0"
+              ></v-checkbox>
               <td>{{ props.item.id }}</td>
               <td>{{ props.item.username}}</td>
               <td>{{ props.item.role }}</td>
@@ -26,7 +31,9 @@
         </v-col>
       </v-row>
     </v-slide-y-transition>
-
+    <v-spacer/>
+    <label>{{ this.$data.msg }}</label>
+    <v-btn class="ma-2" color="primary" @click.local="deleteUsers">Delete</v-btn>
     <v-alert
       :value="showError"
       type="error"
@@ -50,16 +57,18 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { User } from '@/models/User';
 import axios from 'axios';
+import router from "@/router";
 
 @Component({})
 export default class FetchUserDataView extends Vue {
   private loading: boolean = true;
   private showError: boolean = false;
-  private errorMessage: string = 'Error while loading weather forecast.';
+  private errorMessage: string = 'Error while loading users.';
   data() {
     return {
       users: [],
       selected: [],
+      msg: "",
       headers : [
       { text: 'Id', value: 'id' },
       { text: 'User name', value: 'name' },
@@ -70,6 +79,15 @@ export default class FetchUserDataView extends Vue {
 
 
   private created() {
+    let authorized:string = localStorage.getItem('loggedIn') || "";
+    let role:string = localStorage.getItem('role') || "";
+    if("true" != authorized){
+      router.push('/login');
+      return;
+    }else if("Administrator" != role){
+      router.push('/');
+      return;
+    }
     this.fetchUsers();
   }
 
@@ -85,12 +103,30 @@ export default class FetchUserDataView extends Vue {
         this.errorMessage = `Error while loading users: ${e.message}.`;
       })
       .finally(() => (this.loading = false));
+  }
+
+  private deleteUsers() {
     let users = this.$data.users;
-    this.$data.users.forEach( function(item:User, i:number) {
-      users[i].selected = true;
+    this.$data.msg = this.$data.selected[0].name;
+    this.$data.selected.forEach( function (item:User) {
+      axios
+              .delete<User[]>('api/Users/' + item.id)
+              .then((response) => {
+              })
     });
-    this.$data.users = users;
-    this.$data.users.map((u:User) => u.selected = false);
+    this.fetchUsers();
+  }
+  
+  private deleteUser(id:string){
+    axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+    axios
+            .delete<User[]>('api/Users/' + id)
+            .then((response) => {
+            })
+            .catch((e) => {
+              this.showError = true;
+              this.errorMessage = `Error while loading users: ${e.message}.`;
+            });
   }
 }
 </script>

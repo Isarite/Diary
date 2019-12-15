@@ -1,20 +1,20 @@
 <template>
     <v-container fluid>
-        <v-slide-y-transition v-if ="loggedIn"  mode="out-in">
-            <Login/>
+        <v-slide-y-transition mode="out-in">
+            <Logout/>
         </v-slide-y-transition>
     </v-container>
 </template>
 
 <script lang="ts">
     import { Component, Vue } from 'vue-property-decorator';
-    import Login from '@/components/Login.vue';
+    import Logout from '@/components/Logout.vue';
     import router from "@/router";
     @Component({
-        components: { Login },
+        components: { Logout },
     })
-    
-    export default class LoginView extends Vue {
+
+    export default class LogoutView extends Vue {
         data() {
             return {
                 loggedIn : (localStorage.getItem('loggedIn') === "false"), // store the token in localstorage,
@@ -22,7 +22,7 @@
         }
         created(){
             let authorized:string = localStorage.getItem('loggedIn') || "";
-            if("true" == authorized){
+            if("true" != authorized){
                 router.push('/');
                 return;
             }

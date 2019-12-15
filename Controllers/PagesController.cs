@@ -24,14 +24,20 @@ namespace DiaryApp.Controllers
         }
 
         // GET: api/DiaryPages
-        [Route("[action]/{id}")]
+        [Route("[action]/{diaryId}")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<DiaryPage>>> GetPages(string diaryId)
+        public async Task<ActionResult<IEnumerable<DiaryPageResource>>> GetPages(string diaryId)
         {
             var diary = await _context.Diaries.FindAsync(diaryId);
             var pages = from m in _context.Pages select m;
             var result = await pages.Where(d => d.diary.Equals(diary)).ToListAsync();
-            return Ok(result);
+            var transformed = new List<DiaryPageResource>();
+            foreach (var page in result)
+            {
+                transformed.Add(new DiaryPageResource() {number = page.number,text = page.text, id = page.id});
+            }
+
+            return Ok(transformed);
         }
 
         // GET: api/DiaryPages/5
