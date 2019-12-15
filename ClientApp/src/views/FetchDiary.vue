@@ -31,7 +31,7 @@
                                 </v-toolbar>
                                 <v-card-text>
                                     <v-form>
-                                        <v-textarea v-model = "name" prepend-icon="book" placeholder="#Title#"/>
+                                        <v-textarea  auto-grow v-model = "name" prepend-icon="book" placeholder="#Title#"/>
                                     </v-form>
                                 </v-card-text>
                                     <v-card-text>
@@ -61,7 +61,7 @@
                     >
                         <v-toolbar-title>Edit</v-toolbar-title>
                     </v-toolbar>
-                        <v-textarea auto-grow v-model = "currentPage" placeholder="#Title"/>
+                        <v-textarea id="sel" auto-grow v-model = "currentPage" placeholder="#Title"/>
                 </v-card>
             </v-col>
         </v-row>
@@ -77,6 +77,9 @@
                     >
                         <v-toolbar-title>Preview</v-toolbar-title>
                     </v-toolbar>
+                    <v-card-actions>
+                        <v-btn v-for="(item, index) in markingtext"  outlined tile rounded class="my-1" @click.local="deleteMarking(index)">{{item}}</v-btn>
+                    </v-card-actions>
                     <v-card-text v-on:dblclick="showEditDialog">
                         <vue-markdown :source="currentPage"/>
                     </v-card-text>
@@ -91,10 +94,13 @@
         </div>
         <div v-if="!createPage&&!editPage">
         <v-row no-gutters>
+            <v-expand-transition>
             <v-col>
-                <v-btn v-for="(item, index) in pages"  outlined tile rounded class="my-1" :color="$data.colors[index]" @click.local="viewPage(index)">{{item.number}}</v-btn>
+                    <v-btn v-for="(item, index) in pages"  outlined tile rounded class="my-1" :color="$data.colors[index]" @click.local="viewPage(index)">{{index + 1}}</v-btn>
                 <v-btn v-if="showCreateButton" class="ma-2" color="primary" @click.local="showCreationDialog">+</v-btn>
+                <v-btn v-if="showCreateButton" class="ma-2" color="primary" @click.local="mark">Mark</v-btn>
             </v-col>
+            </v-expand-transition>
         </v-row>
         </div>
         <v-btn v-if="!createPage&&!editPage" class="ma-2" color="primary" @click.local="deletePage">Delete</v-btn>
@@ -125,6 +131,7 @@
     import VueMarkDown from "vue-markdown";
     import {PageRequest} from "@/models/PageRequest";
     import {Diary} from "@/models/Diary";
+    import {Marking} from "@/models/Marking";
     
     
     @Component({components: { 'vue-markdown':VueMarkDown ,FetchDiaryView}})
@@ -136,6 +143,8 @@
         data() {
             return {
                 pages: [],
+                markings: [],
+                markingtext: [],
                 selected: [],
                 colors:[],
                 createPage: false,
@@ -143,11 +152,13 @@
                 showCreateButton: true,
                 showAlert: false,
                 showError: false,
+                selection: "",
                 errorMessage: 'Error while loading diaries.',
                 name: "",
                 id : this.$route.params.id,
                 lastNumber: -1,
                 currentPageNum: -1,
+                currentPageId: "",
                 currentPage: "# There are no pages, yet. Try to create one."
             };
         }
@@ -161,6 +172,8 @@
             }
             this.fetchPages();
             console.log(this.$route.params.id);
+            var here = this;
+            document.onmouseup = document.onkeyup = document.onselectionchange = function(){here.selectit();};
         }
 
         private showCreationDialog(){
@@ -220,7 +233,7 @@
 
         private async edit(){
             axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
-            let page :Page = new Page(this.$data.pages[this.$data.currentPageNum].id,this.$data.lastNumber + 1,this.$data.name);
+            let page :Page = new Page(this.$data.pages[this.$data.currentPageNum].id,this.$data.currentPageNum + 1,this.$data.currentPage);
             await axios
                 .put<Page>('api/Pages/' + this.$data.id,
                     page,
@@ -228,12 +241,13 @@
                 .catch((e) => {
                     this.$data.showError = true;
                     this.$data.errorMessage = `Error while editing diary page ${this.$data.name}: ${e.message + e.response.data[0]}.`;
-                    console.log(e.response.data);
+                    console.log(e.response);
                 })
                 .finally(() => (this.loading = false));
             this.fetchPages();
-            this.showCreationDialog();
-            //this.diaryEdited();
+            //this.showCreationDialog();
+            this.showEditDialog();
+            this.diaryEdited();
         }
         
         private async diaryEdited(){
@@ -296,8 +310,98 @@
                 this.$data.colors[this.$data.currentPageNum] = "primary";
             this.$data.currentPageNum = number;
             this.$data.currentPage = this.$data.pages[number].text;
+            this.$data.currentPageId = this.$data.pages[number].id;
             this.$data.colors[number] = "red";
+            this.fetchMarkings();
+        }
+
+        private selectit() {
+            let text = this.getSelectionText();
+            if(text != "")
+                this.$data.selected = text;
+        }
+
+        private getSelectionText() {
+            var text = "";
+            var anydocument : any = document;
+            var activeEl = document.activeElement;
+            var activeElTagName = activeEl ? activeEl.tagName.toLowerCase() : null;
+            if(activeElTagName != "button") {
+                if (window.getSelection) {
+                    text = (window.getSelection() || "").toString();
+                } else if (anydocument.selection && anydocument.selection.type != "Control") {
+                    text = anydocument.selection.createRange().text;
+                }
+            }
+            //console.log(text);
+            return text;
+        }
+        
+        private async mark(){
+            console.log(this.$data.selected);
+            var text = this.$data.selected;
+            var start = this.$data.currentPage.indexOf(text);
+            var end = start + text.length;
+            axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+            let marking : Marking = new Marking(this.$data.currentPageId,start,end, "");
+            await axios
+                .post('api/Markings/',
+                    marking,
+                    {headers: {"Content-Type": "application/json"}})
+                .catch((e) => {
+                    this.$data.showError = true;
+                    this.$data.errorMessage = `Error while creating marking ${this.$data.name}: ${e.message + e.response.data[0]}.`;
+                    console.log(e.response.data);
+                })
+                .finally(() => (this.loading = false));
+            //this.fetchPages();
+            //this.showCreationDialog();
+            this.diaryEdited();
+            this.viewPage(this.$data.currentPageNum);
+        }
+        
+        private async fetchMarkings(){
+            axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+            await axios
+                .get<Marking[]>('api/Markings/GetMarkings/' +this.$data.currentPageId)
+                .then((response) => {
+                    this.$data.markings = response.data;
+                    console.log(response.data);
+                    console.log("hello");
+                })
+                .catch((e) => {
+                    this.$data.showError = true;
+                    this.$data.errorMessage = `Error while getting markings ${this.$data.name}: ${e.message + e.response.data[0]}.`;
+                    console.log(e.response.data);
+                    console.log("bye");
+                })
+                .finally(() => (this.loading = false));
+            this.$data.markingtext = [];
+            var markingtext: string[] = [];
+            var self = this;
+            this.$data.markings.forEach( function (item:Marking) {
+                markingtext.push(self.$data.currentPage.substring(item.start, item.end));
+            });
+            this.$data.markingtext = markingtext;
+            //this.showCreationDialog();
+        }
+
+        private async deleteMarking(index:number){
+            axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+            await axios
+                .delete('api/Markings/' + this.$data.markings[index].id)
+                .catch((e) => {
+                    this.$data.showError = true;
+                    this.$data.errorMessage = `Error while deleting marking ${index}: ${e.message + e.response.data}.`;
+                    console.log(e.response.data);
+                    console.log("this.$data.markings[index].id)");
+                });
+            this.viewPage(this.$data.currentPageNum);
+            //this.showCreationDialog();
         }
     }
+          
+
+
+    
 </script>
-g

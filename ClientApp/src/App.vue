@@ -39,9 +39,50 @@
           </v-btn>
         </template>
 
+        <v-card v-if="$data.loggedIn"
+                class="mx-auto"
+                max-width="300"
+                tile
+        >
+          <v-img
+                  height="50%"
+                  src="https://cdn.vuetifyjs.com/images/cards/server-room.jpg"
+          >
+            <v-row
+                    align="end"
+                    class="fill-height"
+            >
+              <v-col
+                      align-self="start"
+                      class="pa-0"
+                      cols="12"
+              >
+                <v-avatar
+                        class="profile"
+                        color="grey"
+                        size="164"
+                        tile
+                >
+                  <v-img src="http://akcmv.gov.lv/wp-content/uploads/2018/06/blank-profile-picture-973460_1280-2-1024x1024.png"/>
+                </v-avatar>
+              </v-col>
+              <v-col class="py-0">
+                <v-list-item
+                        color="rgba(0, 0, 0, .4)"
+                        dark
+                >
+                  <v-list-item-content>
+                    <v-list-item-title  class="title">{{$data.username}}</v-list-item-title>
+                    <v-list-item-subtitle>{{$data.role}}</v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-col>
+            </v-row>
+          </v-img>
+        </v-card>
         <v-list>
           <v-list-item
-                  v-list-item value="true" v-for="(item, i) in loggedIn" :key="i" :to="item.link"
+                  v-list-item value="true" v-for="(item, i) in loggedIn2" :key="i" :to="item.link"
           >
             <v-list-item-title>{{ item.title }}</v-list-item-title>
             <v-list-item-action>
@@ -77,8 +118,9 @@ import JwtDecode from "jwt-decode";
 import router from "@/router";
 import {Token} from "@/models/Token";
 import Timeout = NodeJS.Timeout;
+import {User} from "@/models/User";
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
-axios.defaults.baseURL = `http://localhost:5000`;
+axios.defaults.baseURL = `https://diaryappapp.azurewebsites.net/`;
 if(localStorage.getItem('loggedIn') ===null)
   localStorage.setItem('loggedIn', "false");
 var token:string = localStorage.getItem('token') || "";
@@ -97,6 +139,8 @@ export default class App extends Vue {
     return {
       key: 0,
       refresh: null,
+      role: "Guest",
+      username: "No username",
     };
   }
   private clipped: boolean = true;
@@ -121,14 +165,14 @@ export default class App extends Vue {
           this.items2.concat([{ title: 'Users', icon: 'supervisor_account', link: '/fetch-users' }]) 
           : this.items2.concat([]);
   private items = this.items1.concat(this.items3);
-  private loggedIn = (localStorage.getItem('loggedIn') == "false") ? [{ title: 'Login', icon: 'supervisor_account', link: '/login'},    
+  private loggedIn2 = (localStorage.getItem('loggedIn') == "false") ? [{ title: 'Login', icon: 'supervisor_account', link: '/login'},    
             { title: 'Register', icon: 'supervisor_account', link: '/register'}] : 
-          [ { title: 'Your account', icon: 'supervisor_account', link: '/fetch-user'},{title: 'Log Out', icon: 'supervisor_account', link: '/logout'}];
+          [{title: 'Log Out', icon: 'supervisor_account', link: '/logout'}];
 
   created(){
     this.$route.meta.authorized = false;
     this.$route.meta.admin = false;
-
+    this.getUser();
   }
   
   ready() {
@@ -137,6 +181,21 @@ export default class App extends Vue {
       self.refreshToken();
     }.bind(this), 30 * 60 * 1000);//refreshes every 30 min
     localStorage.setItem('refresh', '1');
+  }
+  
+  getUser(){
+    if(localStorage.getItem('loggedIn')!= "true"){
+      this.$data.loggedIn = false;
+      return;
+    }
+    this.$data.loggedIn = true;
+    axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+    axios
+            .get<User>('api/Users/GetUser')
+            .then((response) => {
+              this.$data.username = response.data.name;
+              this.$data.role = response.data.role;
+            });
   }
   
   public refreshToken(){

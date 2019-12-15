@@ -4,8 +4,6 @@
       <v-row>
         <v-col>
           <h1>Users</h1>
-          <p>This component demonstrates fetching data from the server.</p>
-
           <v-data-table
             :headers="headers"
             :items="users"
@@ -22,7 +20,7 @@
                       v-model="props.selected"
                       :disabled="!props.selected && selected.length != 0"
                       :indeterminate="!props.selected && selected.length != 0"
-              ></v-checkbox>
+              />
               <td>{{ props.item.id }}</td>
               <td>{{ props.item.username}}</td>
               <td>{{ props.item.role }}</td>
@@ -32,7 +30,6 @@
       </v-row>
     </v-slide-y-transition>
     <v-spacer/>
-    <label>{{ this.$data.msg }}</label>
     <v-btn class="ma-2" color="primary" @click.local="deleteUsers">Delete</v-btn>
     <v-alert
       :value="showError"

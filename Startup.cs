@@ -33,11 +33,12 @@ namespace DiaryApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Filename = MyDatabase.db"));
             //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Filename = MyDatabase.db"));
-            services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("test"));
-
+            //services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("test"));
+            // services.AddDbContext<ApplicationDbContext>(options =>
+            //     options.UseMySQL(Configuration.GetConnectionString("MYSQLCONNSTR_localdb")));
             //string connectionString = Environment.GetEnvironmentVariable("MYSQLCONNSTR_localdb").ToString();
             //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
@@ -50,8 +51,7 @@ namespace DiaryApp
                 options.Password.RequireUppercase = false;
                 options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultProvider;
                 })
-                .AddEntityFrameworkStores<ApplicationDbContext>().
-                AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.TryAddScoped<RoleManager<IdentityRole>>();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
@@ -87,16 +87,12 @@ namespace DiaryApp
             });
 
 
-
             // In production, the React files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/dist";
-            });
+            services.AddSpaStaticFiles(configuration => configuration.RootPath = "ClientApp/dist");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext _context, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ApplicationDbContext context, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -108,6 +104,7 @@ namespace DiaryApp
                 app.UseHsts();
                 app.UseHttpsRedirection();
             }
+
             app.UseAuthentication();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
@@ -129,12 +126,9 @@ namespace DiaryApp
             //_context.Database.EnsureCreated();
 
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
-            });
+            app.UseMvc(routes => routes.MapRoute(
+                name: "default",
+                template: "{controller}/{action=Index}/{id?}"));
             //app.UseHttpsRedirection();
             app.UseSpa(spa =>
             {
@@ -149,7 +143,7 @@ namespace DiaryApp
                     // spa.UseProxyToSpaDevelopmentServer("http://localhost:8080"); // your Vue app port
                 }
             });
-            _context.Database.EnsureCreated();
+            context.Database.EnsureCreated();
             SeedRoles(serviceProvider).Wait();
         }
 

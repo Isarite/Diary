@@ -14,10 +14,10 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.0aaeec28c9eec62fd00a6da1b324edad.js"
+  "/precache-manifest.31d0aafdf784edf1594d9002ebb4de13.js"
 );
 
-workbox.core.setCacheNameDetails({prefix: "asp-net-core-vue-starter"});
+workbox.core.setCacheNameDetails({prefix: "diary-app-client"});
 
 /**
  * The workboxSW.precacheAndRoute() method efficiently caches and responds to

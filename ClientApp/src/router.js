@@ -50,9 +50,9 @@ export default new Router({
             component: () => import(/* webpackChunkName: "fetch-users" */ './views/Logout.vue'),
         },
         {
-            path: '/user/:id',
+            path: '/fetch-user',
             name: 'fetch-user',
-            component: () => import(/* webpackChunkName: "fetch-users" */ './views/FetchUserData.vue'),//TODO changeView
+            component: () => import(/* webpackChunkName: "fetch-users" */ './views/FetchUser.vue'),//TODO changeView
         },
         {
             path: '/fetch-diary/:id',

@@ -26,12 +26,17 @@ namespace DiaryApp.Controllers
         // GET: api/Markings
         [Route("[action]/{id}")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Marking>>> GetMarkings(string id)
+        public async Task<ActionResult<IEnumerable<MarkingResource>>> GetMarkings(string id)
         {
             var page = await _context.Pages.FindAsync(id);
             var markings = from m in _context.Markings select m;
             var result = await markings.Where(d => d.page.Equals(page)).ToListAsync();
-            return Ok(result);
+            var end = new List<MarkingResource>();
+            foreach (var marking in result)
+                end.Add(new MarkingResource
+                    {End = marking.end, Start = marking.start, PageId = marking.page.id, Id = marking.id});
+
+            return Ok(end);
         }
 
         // GET: api/Markings/5

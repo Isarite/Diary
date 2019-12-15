@@ -1,5 +1,6 @@
-<template>
+<template class="change-font">
     <div id="app">
+        <v-expand-transition>
         <v-app id="inspire">
             <v-content>
                 <v-container
@@ -20,11 +21,12 @@
                                         color="primary"
                                         dark
                                         flat
+                                        class="change-font"
                                 >
                                     <v-toolbar-title>Login</v-toolbar-title>
                                     <v-spacer/>
                                 </v-toolbar>
-                                <v-card-text>
+                                <v-card-text class="change-font">
                                     <v-form>
                                         <v-alert type="error" v-model ="showAlert">
                                             Login failed. Check your username and password.
@@ -38,7 +40,7 @@
                                                       placeholder="Password"/>
                                     </v-form>
                                 </v-card-text>
-                                <v-card-actions>
+                                <v-card-actions class="change-font">
                                     <v-spacer/>
                                     <v-btn class="ma-2" color="primary" @click.local="fetch">Login</v-btn>
                                 </v-card-actions>
@@ -48,6 +50,7 @@
                 </v-container>
             </v-content>
         </v-app>
+    </v-expand-transition>
     </div>
 </template>
 
@@ -110,3 +113,9 @@
 
     }
 </script>
+
+<style scoped>
+    .change-font {
+        font-family: "Comic Sans MS","Fira Code","Consolas",serif;
+    }
+</style>

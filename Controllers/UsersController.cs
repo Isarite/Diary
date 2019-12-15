@@ -54,14 +54,17 @@ namespace DiaryApp.Controllers
                         Name = user.NormalizedUserName
                     });
             }
+
             return returnList;
         }
 
         // GET: api/Users/5
         [Authorize(Roles = "Administrator,User")]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUser(string id)
+        [Route("[action]")]
+        [HttpGet]
+        public async Task<IActionResult> GetUser()
         {
+            string id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
@@ -84,12 +87,12 @@ namespace DiaryApp.Controllers
         [Route("[action]/{username}")]
         public async Task<ActionResult<string>> RequestToken([FromBody] string password , string username)
         {
-
             var user = await _userManager.FindByNameAsync(username);
             if (! await _userManager.CheckPasswordAsync(user,password))
             {
                 return NotFound();
             }
+
             var roles =  await _userManager.GetRolesAsync(user);
 
             var key = Encoding.ASCII.GetBytes

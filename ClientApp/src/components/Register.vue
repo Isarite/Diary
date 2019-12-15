@@ -20,11 +20,12 @@
                                         color="primary"
                                         dark
                                         flat
+                                        class="change-font"
                                 >
                                     <v-toolbar-title>Register</v-toolbar-title>
                                     <v-spacer/>
                                 </v-toolbar>
-                                <v-card-text>
+                                <v-card-text class="change-font">
                                     <v-form>
                                         <v-alert type="error" v-model ="showAlert">
                                             Register failed. Likely the account with this name already exists.
@@ -41,7 +42,7 @@
                                                       placeholder="Password"/>
                                     </v-form>
                                 </v-card-text>
-                                <v-card-actions>
+                                <v-card-actions class="change-font">
                                     <v-spacer/>
                                     <v-btn class="ma-2" color="primary" @click.local="register">Register</v-btn>
                                 </v-card-actions>
@@ -104,3 +105,9 @@
 
     }
 </script>
+
+<style scoped>
+    .change-font {
+        font-family: "Comic Sans MS","Fira Code","Consolas",serif;
+    }
+</style>

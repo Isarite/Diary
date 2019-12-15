@@ -56,14 +56,11 @@ namespace DiaryApp.Controllers
 
         // PUT: api/DiaryPages/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDiaryPage(string id, DiaryPage diaryPage)
+        public async Task<IActionResult> PutDiaryPage(string id, DiaryPageResource diaryPage)
         {
-            if (id != diaryPage.id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(diaryPage).State = EntityState.Modified;
+            var page = _context.Pages.Find(diaryPage.id);
+            page.text = diaryPage.text;
+            _context.Entry(page).State = EntityState.Modified;
 
             try
             {

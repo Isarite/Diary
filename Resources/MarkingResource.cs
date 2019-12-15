@@ -10,5 +10,7 @@ namespace DiaryApp.Resources
         public string PageId { get; set; }
         public int Start { get; set; }
         public int End { get; set; }
+
+        public string Id { get; set; }
     }
 }

@@ -3,6 +3,7 @@ export class Marking {
         public pageId: string,
         public start: number,
         public end: number,
+        public id: string,
     ) {
     }
 }
