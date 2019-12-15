@@ -7,27 +7,27 @@
 </template>
 
 <script lang="ts">
-    import { Component, Vue } from 'vue-property-decorator';
-    import Logout from '@/components/Logout.vue';
-    import router from "@/router";
-    @Component({
-        components: { Logout },
-    })
+import { Component, Vue } from 'vue-property-decorator';
+import Logout from '@/components/Logout.vue';
+import router from '@/router';
+@Component({
+    components: { Logout },
+})
 
-    export default class LogoutView extends Vue {
-        data() {
-            return {
-                loggedIn : (localStorage.getItem('loggedIn') === "false"), // store the token in localstorage,
-            };
-        }
-        created(){
-            let authorized:string = localStorage.getItem('loggedIn') || "";
-            if("true" != authorized){
-                router.push('/');
-                return;
-            }
+export default class LogoutView extends Vue {
+    public data() {
+        return {
+            loggedIn : (localStorage.getItem('loggedIn') === 'false'), // store the token in localstorage,
+        };
+    }
+    public created() {
+        const authorized: string = localStorage.getItem('loggedIn') || '';
+        if ('true' != authorized) {
+            router.push('/');
+            return;
         }
     }
+}
 </script>
 
 

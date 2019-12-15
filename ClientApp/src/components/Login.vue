@@ -57,61 +57,60 @@
 
 
 <script lang = "ts">
-    import { mapGetters, mapActions } from 'vuex';
-    import router from "@/router";
-    import {Action, Getter} from "vuex-class";
-    import { Component,Vue} from 'vue-property-decorator';
-    import {user} from "@/store/user";
-    import axios from "axios";
-    import {Token} from "@/models/Token";
+import { mapGetters, mapActions } from 'vuex';
+import router from '@/router';
+import {Action, Getter} from 'vuex-class';
+import { Component, Vue} from 'vue-property-decorator';
+import {user} from '@/store/user';
+import axios from 'axios';
+import {Token} from '@/models/Token';
 
-    const namespace: string = 'user';
+const namespace: string = 'user';
 
 
-    @Component
-    export default class Login extends Vue{
-        @Getter('currentJWT', { namespace })
-        private currentJWT!: string;
-        @Action('fetchJWT', { namespace })
-        private fetchJWT: any;
+@Component
+export default class Login extends Vue {
+    @Getter('currentJWT', { namespace })
+    private currentJWT!: string;
+    @Action('fetchJWT', { namespace })
+    private fetchJWT: any;
 
-        data() {
-            return {
-                username: "",
-                password: "",
-                show1: false,
-                token: localStorage.getItem('token'),
-                showAlert: false,
-            };
-        }
+    public data() {
+        return {
+            username: '',
+            password: '',
+            show1: false,
+            token: localStorage.getItem('token'),
+            showAlert: false,
+        };
+    }
 
-        private fetch() {
-            //this.$store.dispatch('user/fetchJWT', {username: "admin", password: "12345"});
-            axios
-                .put<Token>('api/Users/RequestToken/' + this.$data.username,
-                    this.$data.password,
-                    {headers: {"Content-Type": "application/json"}}
-                ).
-            then((response) => {
-                    localStorage.setItem('token', response.data.token); // store the token in localstorage
+    private fetch() {
+        // this.$store.dispatch('user/fetchJWT', {username: "admin", password: "12345"});
+        axios
+            .put<Token>('api/Users/RequestToken/' + this.$data.username,
+                this.$data.password,
+                {headers: {'Content-Type': 'application/json'}},
+            ).
+        then((response) => {
                 localStorage.setItem('token', response.data.token); // store the token in localstorage
-                localStorage.setItem('loggedIn', "true"); // store the token in localstorage
-                axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-                    this.$data.showAlert = false;
+                localStorage.setItem('token', response.data.token); // store the token in localstorage
+                localStorage.setItem('loggedIn', 'true'); // store the token in localstorage
+                axios.defaults.headers.common.Authorization = `Bearer ${response.data.token}`;
+                this.$data.showAlert = false;
                 this.$route.meta.admin = true;
                 this.$route.meta.authorized = true;
                 window.location.reload();
-                router.push("/")
-            }).catch( error =>
-            {console.log(error.response);
-                localStorage.removeItem('token');
-                localStorage.setItem('loggedIn', "false"); // store the token in localstorage
-                this.$data.showAlert = true;
-            });
-
-        }
+                router.push('/');
+        }).catch( (error) => {console.log(error.response);
+         localStorage.removeItem('token');
+         localStorage.setItem('loggedIn', 'false'); // store the token in localstorage
+         this.$data.showAlert = true;
+        });
 
     }
+
+}
 </script>
 
 <style scoped>

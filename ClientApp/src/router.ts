@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import * as JWT from 'jwt-decode';
-import md5 from "md5";
+import md5 from 'md5';
 import Home from './views/Home.vue';
 
 
@@ -57,13 +57,13 @@ export default new Router({
         {
             path: '/fetch-user/:id',
             name: 'fetch-user',
-            component: () => import(/* webpackChunkName: "fetch-users" */ './views/FetchUser.vue'),//TODO changeView
+            component: () => import(/* webpackChunkName: "fetch-users" */ './views/FetchUser.vue'), // TODO changeView
         },
         {
             path: '/fetch-diary/:id',
             name: 'fetch-diary',
             meta: {authorized: false},
-            component: () => import(/* webpackChunkName: "fetch-users" */ './views/FetchDiaries.vue'),//TODO changeView
+            component: () => import(/* webpackChunkName: "fetch-users" */ './views/FetchDiaries.vue'), // TODO changeView
         },
     ],
 });

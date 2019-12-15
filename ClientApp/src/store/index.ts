@@ -17,7 +17,7 @@ const store: StoreOptions<RootState> = {
   },
   modules: {
     counter,
-    user
+    user,
   },
 };
 

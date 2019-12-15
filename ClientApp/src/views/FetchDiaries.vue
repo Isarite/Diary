@@ -97,95 +97,95 @@
 </template>
 
 <script lang="ts">
-    import { Component, Vue } from 'vue-property-decorator';
-    import { Diary } from '@/models/Diary';
-    import axios from 'axios';
-    import {User} from "@/models/User";
-    import router from "@/router";
-    import Login from "@/components/Login.vue";
-    
-    @Component({})
-    export default class FetchDiariesView extends Vue {
-        private loading: boolean = true;
-        private showError: boolean = false;
-        private errorMessage: string = 'Error while loading diaries.';
-        data() {
-            return {
-                diaries: [],
-                selected: [],
-                headers : [
-                    { text: 'Name', value: 'name' },
-                    { text: 'Created', value: 'created' },
-                    { text: 'Edited', value: 'edited'},
-                ],
-                createDiary: false,
-                showCreateButton: true,
-                showAlert: false,
-                name: "",
-            };
-        }
+import { Component, Vue } from 'vue-property-decorator';
+import { Diary } from '@/models/Diary';
+import axios from 'axios';
+import {User} from '@/models/User';
+import router from '@/router';
+import Login from '@/components/Login.vue';
 
-
-        private created() {
-            let authorized:string = localStorage.getItem('loggedIn') || "";
-            if("true" != authorized){
-                router.push('/login');
-                return;
-            }
-            this.fetchDiaries();
-        }
-        
-        private showCreationDialog(){
-            this.$data.createDiary = !this.$data.createDiary;
-            this.$data.showCreateButton = !this.$data.showCreateButton;
-        }
-
-        private fetchDiaries() {
-            axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
-            axios
-                .get<Diary[]>('api/Diaries/GetDiaries')
-                .then((response) => {
-                    this.$data.diaries = response.data;
-                })
-                .catch((e) => {
-                    this.showError = true;
-                    console.log(e.response);
-                    this.errorMessage = `Error while loading diaries: ${e.message} + ${e.response.data}.`;
-                })
-                .finally(() => (this.loading = false));
-        }
-        
-        private async create(){
-            axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
-            await axios
-                .post<Diary>('api/Diaries',
-                    "\""+this.$data.name+"\"",
-                    {headers: {"Content-Type": "application/json"}})
-                .catch((e) => {
-                    this.showError = true;
-                    this.errorMessage = `Error while creating diary ${this.$data.name}: ${e.message + e.response.data[0]}.`;
-                    console.log(e.response.data);
-                })
-                .finally(() => (this.loading = false));
-            this.fetchDiaries();
-            this.showCreationDialog();
-        }
-
-        private async deleteDiaries() {
-            let diaries = this.$data.diaries;
-            this.$data.msg = this.$data.selected[0].name;
-            await this.$data.selected.forEach( function (item:Diary) {
-                axios
-                    .delete<Diary[]>('api/Diaries/' + item.id)
-                    .then((response) => {
-                    })
-            });
-            this.fetchDiaries();
-        }
-        
-        
-        private fetchDiary(id:any){
-            router.push("/fetch-diary/"+id);
-        }
+@Component({})
+export default class FetchDiariesView extends Vue {
+    private loading: boolean = true;
+    private showError: boolean = false;
+    private errorMessage: string = 'Error while loading diaries.';
+    public data() {
+        return {
+            diaries: [],
+            selected: [],
+            headers : [
+                { text: 'Name', value: 'name' },
+                { text: 'Created', value: 'created' },
+                { text: 'Edited', value: 'edited'},
+            ],
+            createDiary: false,
+            showCreateButton: true,
+            showAlert: false,
+            name: '',
+        };
     }
+
+
+    private created() {
+        const authorized: string = localStorage.getItem('loggedIn') || '';
+        if ('true' != authorized) {
+            router.push('/login');
+            return;
+        }
+        this.fetchDiaries();
+    }
+
+    private showCreationDialog() {
+        this.$data.createDiary = !this.$data.createDiary;
+        this.$data.showCreateButton = !this.$data.showCreateButton;
+    }
+
+    private fetchDiaries() {
+        axios.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('token')}`;
+        axios
+            .get<Diary[]>('api/Diaries/GetDiaries')
+            .then((response) => {
+                this.$data.diaries = response.data;
+            })
+            .catch((e) => {
+                this.showError = true;
+                console.log(e.response);
+                this.errorMessage = `Error while loading diaries: ${e.message} + ${e.response.data}.`;
+            })
+            .finally(() => (this.loading = false));
+    }
+
+    private async create() {
+        axios.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('token')}`;
+        await axios
+            .post<Diary>('api/Diaries',
+                '"' + this.$data.name + '"',
+                {headers: {'Content-Type': 'application/json'}})
+            .catch((e) => {
+                this.showError = true;
+                this.errorMessage = `Error while creating diary ${this.$data.name}: ${e.message + e.response.data[0]}.`;
+                console.log(e.response.data);
+            })
+            .finally(() => (this.loading = false));
+        this.fetchDiaries();
+        this.showCreationDialog();
+    }
+
+    private async deleteDiaries() {
+        const diaries = this.$data.diaries;
+        this.$data.msg = this.$data.selected[0].name;
+        await this.$data.selected.forEach( function(item: Diary) {
+            axios
+                .delete<Diary[]>('api/Diaries/' + item.id)
+                .then((response) => {
+                });
+        });
+        this.fetchDiaries();
+    }
+
+
+    private fetchDiary(id: any) {
+        router.push('/fetch-diary/' + id);
+    }
+}
 </script>

@@ -43,49 +43,47 @@
 
 
 <script lang = "ts">
-    import { mapGetters, mapActions } from 'vuex';
-    import router from "@/router";
-    import {Action, Getter} from "vuex-class";
-    import { Component,Vue} from 'vue-property-decorator';
-    import {user} from "@/store/user";
-    import axios from "axios";
-    import {Token} from "@/models/Token";
+import { mapGetters, mapActions } from 'vuex';
+import router from '@/router';
+import {Action, Getter} from 'vuex-class';
+import { Component, Vue} from 'vue-property-decorator';
+import {user} from '@/store/user';
+import axios from 'axios';
+import {Token} from '@/models/Token';
 
-    const namespace: string = 'user';
-
-
-    @Component
-    export default class Logout extends Vue{
-        @Getter('currentJWT', { namespace })
-        private currentJWT!: string;
-        @Action('fetchJWT', { namespace })
-        private fetchJWT: any;
-
-        data() {
-            return {
-                show1: false,
-                showAlert: false,
-            };
-        }
-        
-        private logout()
-        {
-            localStorage.removeItem('token');
-            localStorage.removeItem('role');
-            localStorage.setItem('loggedIn', "false");
-            router.push("/");
-            window.location.reload();
-        }
-        
-        private back()
-        {
-            router.push("/")
-        }
-        
+const namespace: string = 'user';
 
 
+@Component
+export default class Logout extends Vue {
+    @Getter('currentJWT', { namespace })
+    private currentJWT!: string;
+    @Action('fetchJWT', { namespace })
+    private fetchJWT: any;
 
-        
-
+    public data() {
+        return {
+            show1: false,
+            showAlert: false,
+        };
     }
+
+    private logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('role');
+        localStorage.setItem('loggedIn', 'false');
+        router.push('/');
+        window.location.reload();
+    }
+
+    private back() {
+        router.push('/');
+    }
+
+
+
+
+
+
+}
 </script>

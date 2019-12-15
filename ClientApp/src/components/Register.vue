@@ -58,52 +58,51 @@
 
 
 <script lang = "ts">
-    import { mapGetters, mapActions } from 'vuex';
-    import router from "@/router";
-    import {Action, Getter} from "vuex-class";
-    import { Component, Vue } from 'vue-property-decorator';
-    import {user} from "@/store/user";
-    import axios from "axios";
-    import {Token} from "@/models/Token";
+import { mapGetters, mapActions } from 'vuex';
+import router from '@/router';
+import {Action, Getter} from 'vuex-class';
+import { Component, Vue } from 'vue-property-decorator';
+import {user} from '@/store/user';
+import axios from 'axios';
+import {Token} from '@/models/Token';
 
-    const namespace: string = 'user';
+const namespace: string = 'user';
 
 
-    @Component
-    export default class Register extends Vue{
+@Component
+export default class Register extends Vue {
 
-        data() {
-            return {
-                username: "",
-                password: "",
-                show1: false,
-                showAlert:false,
-                showSuccess:false,
-            };
-        }
-
-        private register() {
-            //this.$store.dispatch('user/fetchJWT', {username: "admin", password: "12345"});
-            axios
-                .post('api/Users/' + this.$data.username,
-                    this.$data.password,
-                    {headers: {"Content-Type": "application/json"}}
-                ).
-            then((response) => {
-                if(response.status == 201 ) {
-                    //TODO Registered alert
-                    this.$data.showAlert = false;
-                    this.$data.showSuccess = true;
-                }
-            }).catch( error =>
-            {console.log(error.response);
-                this.$data.showAlert = true;
-                this.$data.showSuccess = false;
-            }
-        );
-        }
-
+    public data() {
+        return {
+            username: '',
+            password: '',
+            show1: false,
+            showAlert: false,
+            showSuccess: false,
+        };
     }
+
+    private register() {
+        // this.$store.dispatch('user/fetchJWT', {username: "admin", password: "12345"});
+        axios
+            .post('api/Users/' + this.$data.username,
+                this.$data.password,
+                {headers: {'Content-Type': 'application/json'}},
+            ).
+        then((response) => {
+            if (response.status == 201 ) {
+                // TODO Registered alert
+                this.$data.showAlert = false;
+                this.$data.showSuccess = true;
+            }
+        }).catch( (error) => {console.log(error.response);
+         this.$data.showAlert = true;
+         this.$data.showSuccess = false;
+        },
+    );
+    }
+
+}
 </script>
 
 <style scoped>

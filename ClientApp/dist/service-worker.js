@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.31d0aafdf784edf1594d9002ebb4de13.js"
+  "/precache-manifest.3073fae2063f58a9befd3143c1b19489.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "diary-app-client"});

@@ -14,5 +14,5 @@ export const getters: GetterTree<UserState, RootState> = {
     jwtSubject(state, getters): string {
         return getters.jwtData ? getters.jwtData.sub : null;
     },
-    jwtIssuer: (state, getters) => getters.jwtData ? getters.jwtData.iss : null
+    jwtIssuer: (state, getters) => getters.jwtData ? getters.jwtData.iss : null,
 };

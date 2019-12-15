@@ -33,6 +33,12 @@ namespace DiaryApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:DefaultConnection"]));
             //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Filename = MyDatabase.db"));
             //services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite("Filename = MyDatabase.db"));
@@ -53,6 +59,9 @@ namespace DiaryApp
                 })
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
             services.TryAddScoped<RoleManager<IdentityRole>>();
+            
+ 
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             var SecretKey = Encoding.ASCII.GetBytes
@@ -124,7 +133,7 @@ namespace DiaryApp
 
             //_context.Database.EnsureDeleted();
             //_context.Database.EnsureCreated();
-
+            app.UseCors("MyPolicy");
 
             app.UseMvc(routes => routes.MapRoute(
                 name: "default",

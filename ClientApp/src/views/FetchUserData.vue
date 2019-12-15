@@ -54,18 +54,18 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { User } from '@/models/User';
 import axios from 'axios';
-import router from "@/router";
+import router from '@/router';
 
 @Component({})
 export default class FetchUserDataView extends Vue {
   private loading: boolean = true;
   private showError: boolean = false;
   private errorMessage: string = 'Error while loading users.';
-  data() {
+  public data() {
     return {
       users: [],
       selected: [],
-      msg: "",
+      msg: '',
       headers : [
       { text: 'Id', value: 'id' },
       { text: 'User name', value: 'name' },
@@ -76,12 +76,12 @@ export default class FetchUserDataView extends Vue {
 
 
   private created() {
-    let authorized:string = localStorage.getItem('loggedIn') || "";
-    let role:string = localStorage.getItem('role') || "";
-    if("true" != authorized){
+    const authorized: string = localStorage.getItem('loggedIn') || '';
+    const role: string = localStorage.getItem('role') || '';
+    if ('true' != authorized) {
       router.push('/login');
       return;
-    }else if("Administrator" != role){
+    } else if ('Administrator' != role) {
       router.push('/');
       return;
     }
@@ -89,7 +89,7 @@ export default class FetchUserDataView extends Vue {
   }
 
   private fetchUsers() {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+    axios.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('token')}`;
     axios
       .get<User[]>('api/Users/')
       .then((response) => {
@@ -103,19 +103,19 @@ export default class FetchUserDataView extends Vue {
   }
 
   private deleteUsers() {
-    let users = this.$data.users;
+    const users = this.$data.users;
     this.$data.msg = this.$data.selected[0].name;
-    this.$data.selected.forEach( function (item:User) {
+    this.$data.selected.forEach( function(item: User) {
       axios
               .delete<User[]>('api/Users/' + item.id)
               .then((response) => {
-              })
+              });
     });
     this.fetchUsers();
   }
-  
-  private deleteUser(id:string){
-    axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
+
+  private deleteUser(id: string) {
+    axios.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('token')}`;
     axios
             .delete<User[]>('api/Users/' + id)
             .then((response) => {
