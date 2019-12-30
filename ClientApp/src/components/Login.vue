@@ -87,9 +87,10 @@ export default class Login extends Vue {
 
     private fetch() {
         // this.$store.dispatch('user/fetchJWT', {username: "admin", password: "12345"});
+        var password:string = this.$data.password;
         axios
             .put<Token>('api/Users/RequestToken/' + this.$data.username,
-                this.$data.password,
+                "\""+password+"\"",
                 {headers: {'Content-Type': 'application/json'}},
             ).
         then((response) => {

@@ -84,9 +84,10 @@ export default class Register extends Vue {
 
     private register() {
         // this.$store.dispatch('user/fetchJWT', {username: "admin", password: "12345"});
+        var password:string = this.$data.password;
         axios
             .post('api/Users/' + this.$data.username,
-                this.$data.password,
+                "\""+password+"\"",
                 {headers: {'Content-Type': 'application/json'}},
             ).
         then((response) => {
